@@ -175,9 +175,9 @@ This software is proprietary and confidential. All rights reserved.
 
 This software is licensed for commercial use only. Unauthorized copying, distribution, modification, or use of this software is strictly prohibited without explicit written permission from the copyright holder.
 
-For licensing inquiries, please contact: [your-email@example.com]
+For licensing inquiries, please contact: https://www.isgroup.biz/en/index.html
 
-Copyright © 2025 [Your Company Name]. All rights reserved.
+Copyright © 2025 ISGroup SRL. All rights reserved.
 
 ## Contributing
 
