@@ -8,6 +8,7 @@ use std::collections::{HashMap, HashSet};
 use std::fs;
 use std::path::Path;
 use std::sync::Arc;
+use std::time::Duration;
 use tokio::sync::Semaphore;
 use url::Url;
 
@@ -29,6 +30,10 @@ struct Args {
     /// Save files instead of creating only JSON
     #[arg(long)]
     save_files: bool,
+    
+    /// Timeout in seconds for individual page requests
+    #[arg(long, default_value = "30")]
+    timeout: u64,
 }
 
 #[derive(Debug, Deserialize)]
@@ -202,7 +207,9 @@ async fn main() -> Result<()> {
     // Create output folder
     fs::create_dir_all(&args.output)?;
     
-    let client = Client::new();
+    let client = Client::builder()
+        .timeout(Duration::from_secs(args.timeout))
+        .build()?;
     
     eprintln!("Analyzing sitemap: {}", args.sitemap_url);
     
