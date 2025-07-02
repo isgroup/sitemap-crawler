@@ -4,7 +4,7 @@ use indicatif::{ProgressBar, ProgressStyle};
 use quick_xml::de::from_str;
 use reqwest::Client;
 use serde::{Deserialize, Serialize};
-use std::collections::{HashMap, HashSet};
+use std::collections::HashSet;
 use std::fs;
 use std::path::Path;
 use std::sync::Arc;
