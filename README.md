@@ -169,7 +169,15 @@ cargo clippy
 
 ## License
 
-[Add your license information here]
+This software is proprietary and confidential. All rights reserved.
+
+**Commercial License**
+
+This software is licensed for commercial use only. Unauthorized copying, distribution, modification, or use of this software is strictly prohibited without explicit written permission from the copyright holder.
+
+For licensing inquiries, please contact: [your-email@example.com]
+
+Copyright © 2025 [Your Company Name]. All rights reserved.
 
 ## Contributing
 
