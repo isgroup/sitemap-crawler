@@ -19,11 +19,11 @@ struct Args {
     sitemap_url: String,
     
     /// Numero di thread per le richieste parallele
-    #[arg(short, long, default_value = "10")]
+    #[arg(long, default_value = "10")]
     threads: usize,
     
     /// Cartella di output
-    #[arg(short, long, default_value = "output")]
+    #[arg(long, default_value = "output")]
     output: String,
     
     /// Salva i file invece di creare solo il JSON
