@@ -13,20 +13,20 @@ use url::Url;
 
 #[derive(Parser)]
 #[command(name = "sitemap-crawler")]
-#[command(about = "Un crawler che analizza sitemap e scarica pagine in parallelo")]
+#[command(about = "A crawler that analyzes sitemaps and downloads pages in parallel")]
 struct Args {
-    /// URL della sitemap da analizzare
+    /// URL of the sitemap to analyze
     sitemap_url: String,
     
-    /// Numero di thread per le richieste parallele
+    /// Number of threads for parallel requests
     #[arg(long, default_value = "10")]
     threads: usize,
     
-    /// Cartella di output
+    /// Output folder
     #[arg(long, default_value = "output")]
     output: String,
     
-    /// Salva i file invece di creare solo il JSON
+    /// Save files instead of creating only JSON
     #[arg(long)]
     save_files: bool,
 }
@@ -75,23 +75,23 @@ async fn parse_sitemap_urls(client: &Client, sitemap_url: &str) -> Result<Vec<St
     let content = fetch_sitemap(client, sitemap_url).await?;
     let mut all_urls = Vec::new();
     
-    // Prova prima a parsare come sitemap index
+    // Try to parse as sitemap index first
     if let Ok(sitemap_index) = from_str::<SitemapIndex>(&content) {
-        eprintln!("Trovata sitemap index con {} sitemap", sitemap_index.sitemaps.len());
+        eprintln!("Found sitemap index with {} sitemaps", sitemap_index.sitemaps.len());
         
         for sitemap_entry in sitemap_index.sitemaps {
             match parse_single_sitemap(client, &sitemap_entry.loc).await {
                 Ok(mut urls) => {
-                    eprintln!("Estratti {} URL da {}", urls.len(), sitemap_entry.loc);
+                    eprintln!("Extracted {} URLs from {}", urls.len(), sitemap_entry.loc);
                     all_urls.append(&mut urls);
                 }
                 Err(e) => {
-                    eprintln!("Errore nel parsing della sitemap {}: {}", sitemap_entry.loc, e);
+                    eprintln!("Error parsing sitemap {}: {}", sitemap_entry.loc, e);
                 }
             }
         }
     } else {
-        // Prova a parsare come singola sitemap
+        // Try to parse as single sitemap
         all_urls = parse_single_sitemap(client, sitemap_url).await?;
     }
     
@@ -115,15 +115,15 @@ fn url_to_filename(url: &str, used_names: &mut HashSet<String>) -> String {
         parsed_url.path()
     );
     
-    // Sostituisci gli slash con underscore
+    // Replace slashes with underscores
     filename = filename.replace('/', "_");
     
-    // Rimuovi caratteri non validi per i nomi file
+    // Remove invalid characters for filenames
     filename = filename.chars()
         .map(|c| if c.is_alphanumeric() || c == '_' || c == '-' || c == '.' { c } else { '_' })
         .collect();
     
-    // Gestisci le collisioni
+    // Handle collisions
     let mut final_filename = filename.clone();
     let mut counter = 2;
     
@@ -199,16 +199,16 @@ async fn fetch_page(client: &Client, url: &str, output_dir: &str, save_files: bo
 async fn main() -> Result<()> {
     let args = Args::parse();
     
-    // Crea la cartella di output
+    // Create output folder
     fs::create_dir_all(&args.output)?;
     
     let client = Client::new();
     
-    eprintln!("Analizzando sitemap: {}", args.sitemap_url);
+    eprintln!("Analyzing sitemap: {}", args.sitemap_url);
     
-    // Estrai tutti gli URL dalla sitemap
+    // Extract all URLs from sitemap
     let urls = parse_sitemap_urls(&client, &args.sitemap_url).await?;
-    eprintln!("Trovati {} URL totali da processare", urls.len());
+    eprintln!("Found {} total URLs to process", urls.len());
     
     // Setup progress bar
     let progress = ProgressBar::new(urls.len() as u64);
@@ -219,11 +219,11 @@ async fn main() -> Result<()> {
             .progress_chars("#>-"),
     );
     
-    // Semaforo per limitare il numero di richieste concorrenti
+    // Semaphore to limit concurrent requests
     let semaphore = Arc::new(Semaphore::new(args.threads));
     let used_names = Arc::new(tokio::sync::Mutex::new(HashSet::new()));
     
-    // Processa tutti gli URL in parallelo
+    // Process all URLs in parallel
     let mut tasks = Vec::new();
     
     for url in urls {
@@ -244,26 +244,26 @@ async fn main() -> Result<()> {
         tasks.push(task);
     }
     
-    // Attendi tutti i task
+    // Wait for all tasks
     let mut results = Vec::new();
     for task in tasks {
         results.push(task.await?);
     }
     
-    progress.finish_with_message("Completato!");
+    progress.finish_with_message("Completed!");
     
-    // Salva i risultati in JSON
+    // Save results to JSON
     let json_path = Path::new(&args.output).join("results.json");
     let json_content = serde_json::to_string_pretty(&results)?;
     fs::write(&json_path, json_content)?;
     
-    eprintln!("Risultati salvati in: {}", json_path.display());
-    eprintln!("Processati {} URL", results.len());
+    eprintln!("Results saved to: {}", json_path.display());
+    eprintln!("Processed {} URLs", results.len());
     
-    // Statistiche
+    // Statistics
     let successful = results.iter().filter(|r| r.error.is_none()).count();
     let failed = results.len() - successful;
-    eprintln!("Successi: {}, Errori: {}", successful, failed);
+    eprintln!("Successful: {}, Failed: {}", successful, failed);
     
     Ok(())
 }
