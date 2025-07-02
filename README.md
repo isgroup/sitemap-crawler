@@ -181,4 +181,22 @@ Copyright © 2025 ISGroup SRL. All rights reserved.
 
 ## Contributing
 
-[Add contribution guidelines here]
+We welcome contributions to the Sitemap Crawler project! You can contribute by submitting Pull Requests with bug fixes, improvements, or new features.
+
+### Contribution Guidelines
+
+1. Fork the repository and create a feature branch
+2. Make your changes with clear, descriptive commit messages
+3. Test your changes thoroughly
+4. Submit a Pull Request with a detailed description of your changes
+
+### Important Legal Notice
+
+**By submitting code contributions (including Pull Requests, patches, or any other form of code submission), you agree that:**
+
+- Your contributed code will fall under the same commercial license as this software
+- All submitted code becomes the intellectual property of ISGroup SRL
+- ISGroup SRL gains full ownership and rights to use, modify, distribute, and commercialize your contributions
+- You waive any claims to ownership or royalties for your contributed code
+
+Please ensure you have the right to contribute any code you submit and that it doesn't violate any third-party licenses or agreements.
